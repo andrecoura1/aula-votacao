@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Player da aula</title>
+<style>html,body{margin:0;height:100%;background:#000;overflow:hidden}#p{width:100%;height:100%}</style>
+</head>
+<body>
+<div id="p"></div>
+<script>
+/* Player do YouTube para o deck da aula: o deck manda comandos por postMessage
+   ({cmd:'play'|'pause'|'seek'|'vol', t, v}) e recebe o tempo do vídeo a cada 200 ms. */
+(function(){
+  var q=new URLSearchParams(location.search),vid=(q.get('v')||'').replace(/[^A-Za-z0-9_-]/g,'');
+  var pl=null,ready=false;
+  function send(o){try{parent.postMessage(Object.assign({yt:1},o),'*')}catch(e){}}
+  window.onYouTubeIframeAPIReady=function(){
+    pl=new YT.Player('p',{videoId:vid,playerVars:{playsinline:1,rel:0,modestbranding:1,controls:1},
+      events:{onReady:function(){ready=true;send({ev:'ready',dur:pl.getDuration()})},
+              onError:function(e){send({ev:'error',code:e.data})},
+              onStateChange:function(e){send({ev:'state',st:e.data,t:pl.getCurrentTime()})}}});
+  };
+  window.addEventListener('message',function(e){
+    var d=e.data;if(!d||!d.cmd||!ready)return;
+    if(d.cmd==='play')pl.playVideo();
+    else if(d.cmd==='pause')pl.pauseVideo();
+    else if(d.cmd==='seek')pl.seekTo(+d.t||0,true);
+    else if(d.cmd==='vol'){pl.unMute();pl.setVolume(Math.max(0,Math.min(100,+d.v||0)))}
+    else if(d.cmd==='mute')pl.mute();
+  });
+  setInterval(function(){if(ready)send({ev:'tick',t:pl.getCurrentTime(),st:pl.getPlayerState(),dur:pl.getDuration()})},200);
+  var s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';document.head.appendChild(s);
+})();
+</script>
+</body>
+</html>
