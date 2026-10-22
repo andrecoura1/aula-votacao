@@ -90,6 +90,7 @@ h1{font-size:28px;line-height:1.15;margin:0;letter-spacing:-.02em}
   function onState(s){
     if(!s||!s.phase)return;
     if(s.id&&st.id===s.id&&s.seq<=st.seq)return;   // mesma mensagem vinda do outro servidor
+    if(s.ep&&s.ep!==store('voto.ep.'+sess)){mine={};store('voto.'+sess,mine);store('voto.ans.'+sess,{});store('voto.ep.'+sess,s.ep)}
     st=s;
     if(s.title)$('title').textContent=s.title;
     if(s.phase==='open'){endAt=Date.now()+Math.max(0,s.left)*1000}
