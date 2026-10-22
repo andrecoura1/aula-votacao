@@ -112,7 +112,8 @@ h1{font-size:28px;line-height:1.15;margin:0;letter-spacing:-.02em}
     $('vOpen').hidden=!(st.phase==='open'||st.phase==='closed'||st.phase==='reveal');
     $('vClosed').hidden=!(st.phase==='closed'||st.phase==='reveal');
     if(st.phase==='idle'){renderScore();return}
-    $('q').textContent=st.q||'Qual é a falsa?';
+    var qq=String(st.q||'Qual é a falsa?').replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]});
+    $('q').innerHTML=qq.replace(/falsa/i,'<span style="color:#FF5A4E">$&</span>');
     $('qsub').textContent=st.sub||'';
     var opts=st.opts||['1','2'],h='';
     opts.forEach(function(o,i){
