@@ -51,7 +51,7 @@ h1{font-size:28px;line-height:1.15;margin:0;letter-spacing:-.02em}
   </section>
 
   <section id="vClosed" hidden>
-    <div class="msg" id="closedMsg"><b>Tempo esgotado</b>Olhe para a tela.</div>
+    <div class="msg" id="closedMsg"><b>Rodada encerrada</b>Olhe para a tela.</div>
   </section>
 
   <div class="score" id="score" hidden></div>
@@ -129,7 +129,7 @@ h1{font-size:28px;line-height:1.15;margin:0;letter-spacing:-.02em}
       var up=function(){var s=Math.max(0,Math.ceil((endAt-Date.now())/1000));$('secs').textContent=s;if(s<=0){clearInterval(tick);[].forEach.call($('opts').children,function(b){b.disabled=true})}};
       up();tick=setInterval(up,250);
     }
-    if(st.phase==='closed')$('closedMsg').innerHTML='<b>Tempo esgotado</b>'+(mine[st.r]?'Você votou na '+mine[st.r]+'. ':'Você não votou nesta. ')+'Olhe para a tela.';
+    if(st.phase==='closed')$('closedMsg').innerHTML=mine[st.r]?'<b>Voto registrado ✓</b>Você votou na '+mine[st.r]+'. '+(st.loop?'A próxima rodada abre já já.':'A resposta sai na tela.'):(st.loop?'<b>Rodada encerrada</b>Ela volta daqui a pouco. Fique com a página aberta.':'<b>Rodada encerrada</b>Olhe para a tela.');
     if(st.phase==='reveal'){
       var ok=mine[st.r]===st.ans;
       $('closedMsg').innerHTML=mine[st.r]?(ok?'<b>Você acertou ✅</b>':'<b>Não foi dessa vez ❌</b>')+'A resposta era a '+st.ans+'.':'<b>A resposta era a '+st.ans+'</b>Você não votou nesta rodada.';
